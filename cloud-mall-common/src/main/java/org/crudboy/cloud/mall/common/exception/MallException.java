@@ -1,5 +1,8 @@
 package org.crudboy.cloud.mall.common.exception;
 
+/**
+ * 自定义异常类
+ */
 public class MallException extends RuntimeException {
     private final Integer code;
     private final String msg;

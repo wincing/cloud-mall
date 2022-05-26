@@ -3,7 +3,13 @@ package org.crudboy.cloud.mall.user.model.pojo;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * 用户实体类
+ */
 public class User implements Serializable {
+    // 序列化用于redis共享用户会话
+    private static final long serialVersionUID = 2003961137492795246L;
+
     private Integer id;
 
     private String username;

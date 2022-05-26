@@ -58,15 +58,6 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrderItemMapper orderItemMapper;
 
-    @Value("${file.upload.ip}")
-    String ip;
-
-    @Value("${file.upload.port}")
-    String port;
-
-    @Value("${file.upload.address}")
-    String fileUploadAddress;
-
     @Transactional(rollbackFor = Exception.class)
     @Override
     public String create(Integer userId, CreateOrderReq createOrderReq) {
@@ -92,6 +83,7 @@ public class OrderServiceImpl implements OrderService {
 
         for (OrderItem orderItem : orderItemList) {
             Product product = productFeignClient.detailForFeign(orderItem.getProductId());
+            // 计算商品扣减后的库存
             int stock = product.getStock() - orderItem.getQuantity();
             if (stock < 0) {
                 throw new MallException(MallExceptionEnum.NOT_ENOUGH);
@@ -99,7 +91,7 @@ public class OrderServiceImpl implements OrderService {
             productFeignClient.updateStock(product.getId(), stock);
         }
 
-        // 清空购物车中下单的订单项
+        // 清空购物车列表中已经完成下单的订单项
         cleanCart(cartVOList);
 
         Order order = new Order();
@@ -126,7 +118,7 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 检测订单每项商品的合法性
-     * @param cartVOList
+     * @param cartVOList 订单中的购物车列表
      */
     private void validOrder(List<CartVO> cartVOList) {
         for (CartVO cartVO : cartVOList) {
@@ -143,8 +135,7 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 将cartVO转化为OrderItem
-     * @param cartVOList
-     * @return
+     * @param cartVOList 购物车视图模型列表
      */
     private List<OrderItem> convertToOrderItem(List<CartVO> cartVOList) {
         List<OrderItem> orderItemList = new ArrayList<>();
@@ -159,7 +150,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 删除购物车
+     * 清空购物车列表中已经完成下单的订单项
      */
     private void cleanCart(List<CartVO> cartVOList) {
         for (CartVO cartVO : cartVOList) {
@@ -169,8 +160,8 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 计算订单总价
-     * @param orderItemList
-     * @return
+     * @param orderItemList 订单项列表
+     * @return 总价格
      */
     private Integer totalPrice(List<OrderItem> orderItemList) {
         Integer total = 0;
@@ -222,10 +213,9 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 查找某个用户的所有订单
-     * @param userId
-     * @param pageNum
-     * @param pageSize
-     * @return
+     * @param userId 用户id
+     * @param pageNum 请求的第几页
+     * @param pageSize 每页的数据条数
      */
     @Override
     public PageInfo selectForCustomer(Integer userId, Integer pageNum, Integer pageSize) {
@@ -237,8 +227,8 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 取消订单
-     * @param userId
-     * @param orderNo
+     * @param userId 用户id
+     * @param orderNo 订单号
      */
     @Override
     public void cancel(Integer userId, String orderNo) {
@@ -259,37 +249,36 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    /**
-     * 调用该方法生成支付二维码图片
-     * @param orderNo
-     * @return
-     */
-    @Override
-    public String qrCode(String orderNo) {
-        // 生成支付页面地址
-        String address = ip + ":" + port;
-        String payUrl = "http://" + address + "/cart-order/order/pay?orderNo=" + orderNo;
-
-        // 生成支付地址的二维码
-        try {
-            QRCodeGenerator.generatorQRCodeImage(payUrl, 350, 350,
-                    fileUploadAddress + orderNo + ".png");
-        } catch (WriterException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // 支付二维码图片访问地址
-        String imgAddress = "http://" + address + "/cart-order/image/" + orderNo + ".png";
-        return imgAddress;
-    }
+//    /**
+//     * 调用该方法生成支付二维码图片
+//     * @param orderNo
+//     * @return
+//     */
+//    @Override
+//    public String qrCode(String orderNo) {
+//        // 生成支付页面地址
+//        String address = ip + ":" + port;
+//        String payUrl = "http://" + address + "/cart-order/order/pay?orderNo=" + orderNo;
+//
+//        // 生成支付地址的二维码
+//        try {
+//            QRCodeGenerator.generatorQRCodeImage(payUrl, 350, 350,
+//                    fileUploadAddress + orderNo + ".png");
+//        } catch (WriterException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        // 支付二维码图片访问地址
+//        String imgAddress = "http://" + address + "/cart-order/image/" + orderNo + ".png";
+//        return imgAddress;
+//    }
 
     /**
      * 获取所有订单
-     * @param pageNum
-     * @param pageSize
-     * @return
+     * @param pageNum 请求的第几页
+     * @param pageSize 每页的数据条数
      */
     @Override
     public PageInfo selectForAdmin(Integer pageNum, Integer pageSize) {
@@ -300,7 +289,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 将订单状态修改为已支付
+     * 将订单状态修改为已支付，未对接实际支付接口，为模拟支付
      * @param orderNo
      */
     @Override

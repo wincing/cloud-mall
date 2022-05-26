@@ -11,15 +11,11 @@ import java.util.Set;
 @Component
 public class Constant {
 
-    // 在session中标识user的键名
+    // 标识用户会话的key
     public static final String MALL_USER = "mall_user";
 
-    /**
-     * 支持排序的方式
-     */
-    public interface ProductLIstOrderBy {
-        Set<String> PRICE_ASC_DESC = Sets.newHashSet("price desc", "price asc");
-    }
+    // 支持商品排序的方式
+    public static Set<String> PRICE_ASC_DESC = Sets.newHashSet("price desc", "price asc");
 
     /**
      * 商品状态
@@ -47,14 +43,19 @@ public class Constant {
         DELIVERED(30, "已发货"),
         FINISHED(40, "交易完成");
 
-        private String value;
-        private int code;
+        private final String value;
+        private final int code;
 
         OrderStatusEnum(int code, String value) {
             this.value = value;
             this.code = code;
         }
 
+        /**
+         * 根据订单状态码返回状态枚举类
+         * @param code 订单状态码
+         * @return 订单状态枚举类
+         */
         public static OrderStatusEnum codeOf (int code) {
             for (OrderStatusEnum orderStatusEnum : values()) {
                 if (orderStatusEnum.code == code) {

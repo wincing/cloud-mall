@@ -2,6 +2,7 @@ package org.crudboy.cloud.mall.user.controller;
 
 
 import com.netflix.ribbon.proxy.annotation.Http;
+import io.swagger.annotations.ApiOperation;
 import org.crudboy.cloud.mall.common.common.ApiRestResponse;
 import org.crudboy.cloud.mall.common.common.Constant;
 import org.crudboy.cloud.mall.common.exception.MallException;
@@ -16,7 +17,7 @@ import javax.servlet.http.HttpSession;
 import static org.crudboy.cloud.mall.common.common.Constant.MALL_USER;
 
 /**
- * 用户控制器
+ * 用户模块路由
  */
 
 @RestController
@@ -26,6 +27,7 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    @ApiOperation("用户注册")
     @PostMapping("/register")
     public ApiRestResponse register(@RequestParam String username,
                                     @RequestParam String password) throws MallException {
@@ -43,6 +45,7 @@ public class UserController {
         return ApiRestResponse.success();
     }
 
+    @ApiOperation("用户登录")
     @PostMapping("/login")
     public ApiRestResponse login(@RequestParam String username, @RequestParam String password,
                                  HttpSession session) throws MallException {
@@ -61,6 +64,7 @@ public class UserController {
         return ApiRestResponse.success(user);
     }
 
+    @ApiOperation("用户个性签名更新")
     @PostMapping("/user/update")
     public ApiRestResponse updateUserInfo(HttpSession session, @RequestParam String signature) throws MallException {
         User currentUser = (User)session.getAttribute(MALL_USER);
@@ -76,12 +80,14 @@ public class UserController {
         return ApiRestResponse.success();
     }
 
+    @ApiOperation("用户退出")
     @PostMapping("/user/logout")
     public ApiRestResponse logout(HttpSession session) {
         session.removeAttribute(MALL_USER);
         return ApiRestResponse.success();
     }
 
+    @ApiOperation("管理员登录")
     @PostMapping("/admin/login")
     public ApiRestResponse adminLogin(@RequestParam String username, @RequestParam String password,
                                  HttpSession session) throws MallException {
@@ -102,6 +108,7 @@ public class UserController {
         return ApiRestResponse.success(user);
     }
 
+    @ApiOperation("用户身份校验(用于外部服务调用)")
     @PostMapping("/checkAdminRole")
     public Boolean checkAdminRole(@RequestBody User user) {
         return userService.isAdmin(user);
@@ -109,8 +116,8 @@ public class UserController {
 
     /**
      * 获取当前登录的User对象
-     * @param session
-     * @return
+     * @param session 该用户会话
+     * @return 用户对象
      */
     @GetMapping("/getCurrentUser")
     public User getCurrentUser(HttpSession session) {

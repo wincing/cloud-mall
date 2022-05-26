@@ -3,8 +3,7 @@ package org.crudboy.cloud.mall.common.common;
 import org.crudboy.cloud.mall.common.exception.MallExceptionEnum;
 
 /**
- * 通用返回对象
- * @param <T>
+ * 通用响应对象
  */
 public class ApiRestResponse<T> {
 
@@ -36,9 +35,7 @@ public class ApiRestResponse<T> {
 
     /**
      * 成功处理请求的返回结果
-     * @param result
-     * @param <T>
-     * @return
+     * @param result 封装在响应中的数据
      */
     public static <T> ApiRestResponse success(T result) {
         ApiRestResponse<T> response = new ApiRestResponse<>();
@@ -48,10 +45,8 @@ public class ApiRestResponse<T> {
 
     /**
      * 处理请求失败的返回对象
-     * @param code
-     * @param msg
-     * @param <T>
-     * @return
+     * @param code 错误码
+     * @param msg 错误信息
      */
     public static <T> ApiRestResponse error(Integer code, String msg) {
         return new ApiRestResponse(code, msg);

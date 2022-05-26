@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
+/**
+ * 购物车模块路由
+ */
 @RestController
 @RequestMapping("/cart")
 public class CartController {

@@ -4,6 +4,7 @@ package org.crudboy.cloud.mall.categoryproduct.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.crudboy.cloud.mall.categoryproduct.model.dao.ProductMapper;
+import org.crudboy.cloud.mall.categoryproduct.model.file.FdfsFile;
 import org.crudboy.cloud.mall.categoryproduct.model.pojo.Product;
 import org.crudboy.cloud.mall.categoryproduct.model.query.ProductListQuery;
 import org.crudboy.cloud.mall.categoryproduct.model.request.AddProductReq;
@@ -11,6 +12,7 @@ import org.crudboy.cloud.mall.categoryproduct.model.request.ListProductReq;
 import org.crudboy.cloud.mall.categoryproduct.model.vo.CategoryVO;
 import org.crudboy.cloud.mall.categoryproduct.service.CategoryService;
 import org.crudboy.cloud.mall.categoryproduct.service.ProductService;
+import org.crudboy.cloud.mall.categoryproduct.util.FdfsUtil;
 import org.crudboy.cloud.mall.common.common.Constant;
 import org.crudboy.cloud.mall.common.exception.MallException;
 import org.crudboy.cloud.mall.common.exception.MallExceptionEnum;
@@ -34,26 +36,12 @@ import java.util.UUID;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    // 文件上传地址
-    public static String FILE_UPLOAD_ADDRESS;
-
-    // zuul网关所在地址
-    @Value("${file.upload.ip}")
-    public String ip;
-
-    @Value("${file.upload.port}")
-    public Integer port;
-
     @Autowired
     ProductMapper productMapper;
 
     @Autowired
     CategoryService categoryService;
 
-    @Value("${file.upload.address}")
-    private void setFileUploadAddress(String address) {
-        FILE_UPLOAD_ADDRESS = address;
-    }
 
     @Override
     public void add(AddProductReq addProductReq) {
@@ -72,52 +60,34 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public URI upload(HttpServletRequest request, MultipartFile file) {
-        // 生成新文件名
-        String filename = file.getOriginalFilename();
-        String suffix = filename.substring(filename.lastIndexOf("."));
-        UUID uuid = UUID.randomUUID();
-        String randomName = uuid.toString() + suffix;
-
-        // 创建文件
-        File fileDirectory = new File(FILE_UPLOAD_ADDRESS);
-        File destFile = new File(FILE_UPLOAD_ADDRESS + randomName);
-        if (!fileDirectory.exists()) {
-            if (!fileDirectory.mkdir()) {
-                throw new MallException(MallExceptionEnum.MKDIR_FAILED);
-            }
-        }
+    public URI upload(MultipartFile multipartFile) {
+        // 获取文件名
+        String fileName = multipartFile.getOriginalFilename();
+        // 获取文件内容
+        byte[] content = null;
         try {
-            file.transferTo(destFile);
+            content = multipartFile.getBytes();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        // 返回创建后文件路径
-        try {
-            URI uri = new URI(request.getRequestURL().toString());
-            uri = getHost(uri);
-            return new URI(uri + "/category-product/image/" + randomName);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            return null;
+        // 获取文件扩展名
+        String ext = "";
+        if (fileName != null && !"".equals(fileName)) {
+            ext = fileName.substring(fileName.lastIndexOf("."));
         }
-    }
+        // 创建文件实体类对象
+        FdfsFile fastDFSFile = new FdfsFile(fileName, content, ext);
+        // 上传
+        String[] uploadResults = FdfsUtil.upload(fastDFSFile);
 
-    /**
-     * 选择url中需要的部分
-     * @param uri
-     * @return
-     */
-    private URI getHost(URI uri) {
-        URI effectiveURI = null;
         try {
-            effectiveURI = new URI(uri.getScheme(), uri.getUserInfo(), ip,
-                    port, null, null, null);
-        } catch (URISyntaxException e) {
+            // 拼接上传后的文件的完整路径和名字, uploadResults[0]为组名, uploadResults[1]为文件名称和路径
+            String path = FdfsUtil.getTrackerUrl() + uploadResults[0] + "/" + uploadResults[1];
+            return new URI(path);
+        } catch (URISyntaxException | IOException e) {
             e.printStackTrace();
         }
-        return effectiveURI;
+        return null;
     }
 
     @Override
@@ -185,7 +155,7 @@ public class ProductServiceImpl implements ProductService {
         }
 
         String orderBy = listProductReq.getOrderBy();
-        if (Constant.ProductLIstOrderBy.PRICE_ASC_DESC.contains(orderBy)) {
+        if (Constant.PRICE_ASC_DESC.contains(orderBy)) {
             PageHelper.startPage(listProductReq.getPageNum(), listProductReq.getPageSize(), orderBy);
         } else {
             PageHelper.startPage(listProductReq.getPageNum(), listProductReq.getPageSize());

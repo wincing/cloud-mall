@@ -1,5 +1,8 @@
 package org.crudboy.cloud.mall.cartorder.model.vo;
 
+/**
+ * 用于展示的购物车实体
+ */
 public class CartVO {
     private Integer id;
 

@@ -3,7 +3,7 @@ package org.crudboy.cloud.mall.categoryproduct.model.query;
 import java.util.List;
 
 /**
- * 商品查询的条件封装类
+ * 商品查询的条件
  */
 public class ProductListQuery {
 

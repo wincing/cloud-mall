@@ -2,6 +2,9 @@ package org.crudboy.cloud.mall.cartorder.model.pojo;
 
 import java.util.Date;
 
+/**
+ * 购物车实体
+ */
 public class Cart {
     private Integer id;
 

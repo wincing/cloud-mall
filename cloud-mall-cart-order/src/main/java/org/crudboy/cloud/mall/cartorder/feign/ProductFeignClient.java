@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * 描述: 商品FeignClient
+ * 商品模块对应的FeignClient
  */
 @FeignClient(value = "cloud-mall-category-product")
 public interface ProductFeignClient {

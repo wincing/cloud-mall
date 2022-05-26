@@ -4,6 +4,9 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+/**
+ * 商品信息更新请求
+ */
 public class UpdateProductReq {
 
     @NotNull(message = "id不能为空")

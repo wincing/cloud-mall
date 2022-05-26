@@ -6,10 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import javax.servlet.http.HttpSession;
-
-import static org.crudboy.cloud.mall.common.common.Constant.MALL_USER;
-
+/**
+ * 购物车模块对应的FeignClient
+ */
 @FeignClient(value = "cloud-mall-user")
 public interface UserFeignClient {
 

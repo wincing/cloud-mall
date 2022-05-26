@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+/**
+ * 订单模块路由
+ */
 @RestController
 public class OrderController {
 
@@ -62,12 +65,12 @@ public class OrderController {
         return ApiRestResponse.success();
     }
 
-    @ApiOperation("生成支付二维码")
-    @PostMapping("/order/qrcode")
-    public ApiRestResponse qrCode(String orderNo) {
-        String codeAddress = orderService.qrCode(orderNo);
-        return ApiRestResponse.success(codeAddress);
-    }
+//    @ApiOperation("生成支付二维码")
+//    @PostMapping("/order/qrcode")
+//    public ApiRestResponse qrCode(String orderNo) {
+//        String codeAddress = orderService.qrCode(orderNo);
+//        return ApiRestResponse.success(codeAddress);
+//    }
 
     @ApiOperation("前台订单列表")
     @GetMapping("/admin/order/list")

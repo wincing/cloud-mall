@@ -1,7 +1,7 @@
 package org.crudboy.cloud.mall.categoryproduct.model.request;
 
 /**
- * 商品查询request实体
+ * 商品查询请求
  */
 public class ListProductReq {
     private String keyword;

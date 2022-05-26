@@ -1,5 +1,8 @@
 package org.crudboy.cloud.mall.cartorder.model.vo;
 
+/**
+ * 用于展示的订单项实体
+ */
 public class OrderItemVO {
     private String orderNo;
 

@@ -1,0 +1,19 @@
+zuul:
+    host:
+        connect-timeout-millis: 60000
+        socket-timeout-millis: 60000
+    prefix: /
+    routes:
+        cloud-mall-cart-order:
+            path: /cart-order/**
+            service-id: cloud-mall-cart-order
+        cloud-mall-category-product:
+            path: /category-product/**
+            service-id: cloud-mall-category-product
+        cloud-mall-user:
+            path: /user/**
+            service-id: cloud-mall-user
+    sensitive-headers: ''
+spring:
+    profiles:
+        active: dev

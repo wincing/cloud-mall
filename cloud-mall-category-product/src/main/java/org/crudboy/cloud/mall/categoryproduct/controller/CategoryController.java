@@ -21,10 +21,12 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.List;
 
+/**
+ * 目录模块路由
+ */
 @Controller
 @ResponseBody
 public class CategoryController {
-
 
     @Autowired
     CategoryService categoryService;

@@ -1,5 +1,6 @@
 package org.crudboy.cloud.mall.common.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.crudboy.cloud.mall.common.common.ApiRestResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,13 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 全局异常处理
+ * 全局异常处理类
  */
+@Slf4j
 @ControllerAdvice
 @ResponseBody
 public class GlobalExceptionHandler {
-
-    private final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(Exception.class)
     public ApiRestResponse handleSystemException(Exception e) {
@@ -37,10 +37,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ApiRestResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         log.error("MethodArgumentNotValidException: ", e);
-        return handleBindingResult(e.getBindingResult());
-    }
 
-    private ApiRestResponse handleBindingResult(BindingResult result) {
+        BindingResult result = e.getBindingResult();
         List<String> errorList = new ArrayList<>();
         if (result.hasErrors()) {
             List<ObjectError> allErrors = result.getAllErrors();
@@ -48,9 +46,11 @@ public class GlobalExceptionHandler {
                 errorList.add(error.getDefaultMessage());
             }
         }
+
         if (errorList.size() == 0) {
             return ApiRestResponse.error(MallExceptionEnum.REQUEST_PRAM_ERROR);
         }
+
         return ApiRestResponse.error(MallExceptionEnum.REQUEST_PRAM_ERROR.getCode(),
                 errorList.toString());
     }

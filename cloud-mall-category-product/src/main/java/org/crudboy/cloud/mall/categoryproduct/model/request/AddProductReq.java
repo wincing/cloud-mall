@@ -4,6 +4,9 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+/**
+ * 添加商品目录请求
+ */
 public class AddProductReq {
 
     @NotNull(message = "商品名称不能为空")

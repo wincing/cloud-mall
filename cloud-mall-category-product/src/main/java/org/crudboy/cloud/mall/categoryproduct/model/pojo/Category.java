@@ -2,6 +2,9 @@ package org.crudboy.cloud.mall.categoryproduct.model.pojo;
 
 import java.util.Date;
 
+/**
+ * 目录实体类
+ */
 public class Category {
     private Integer id;
 

@@ -1,0 +1,29 @@
+eureka:
+    client:
+        service-url:
+            defaultZone: http://localhost:8000/eureka/
+server:
+    port: 8093
+spring:
+    application:
+        name: cloud-mall-category-product
+    datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        name: mall_datasource
+        password: ''
+        url: jdbc:mysql://127.0.0.1:3308/mall?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
+        username: root
+    redis:
+        host: localhost
+        password: ''
+        port: 6379
+    session:
+        store-type: redis
+    servlet:
+        multipart:
+            max-file-size: 50MB
+logging:
+    pattern:
+        console: '%clr(%d{${LOG_DATEFORMAT_PATTERN:HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p})
+            %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan}
+            %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}'

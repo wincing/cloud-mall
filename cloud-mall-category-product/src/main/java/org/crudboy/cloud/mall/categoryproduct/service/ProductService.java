@@ -16,7 +16,7 @@ public interface ProductService {
 
     void add(AddProductReq addProductReq);
 
-    URI upload(HttpServletRequest request, MultipartFile file);
+    URI upload(MultipartFile file);
 
     void update(Product product);
 

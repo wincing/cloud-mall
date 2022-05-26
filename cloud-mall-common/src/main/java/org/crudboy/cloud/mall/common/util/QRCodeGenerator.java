@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 
+/**
+ * 二维码生成工具
+ */
 public class QRCodeGenerator {
     public static void generatorQRCodeImage(String text, int width, int height,
                                             String filePath) throws WriterException, IOException {

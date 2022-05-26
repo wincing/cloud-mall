@@ -23,7 +23,7 @@ public class OrderCodeFactory {
     private static final int maxLength = 5;
 
     /**
-     * 更具id进行加密+加随机数组成固定长度编码
+     * 根据id进行加密+加随机数组成固定长度编码
      */
     private static String toCode(Long id) {
         String idStr = id.toString();
@@ -44,7 +44,6 @@ public class OrderCodeFactory {
 
     /**
      * 生成固定长度随机码
-     *
      * @param n 长度
      */
     private static long getRandom(long n) {

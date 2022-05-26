@@ -3,6 +3,9 @@ package org.crudboy.cloud.mall.cartorder.model.vo;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * 用于展示的订单实体
+ */
 public class OrderVO {
     private String orderNo;
 

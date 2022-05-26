@@ -20,9 +20,6 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 用户注册
-     * @param username
-     * @param password
-     * @throws MallException
      */
     @Override
     public void register(String username, String password) throws MallException {
@@ -48,10 +45,6 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 用户登录
-     * @param username
-     * @param password
-     * @return
-     * @throws MallException
      */
     @Override
     public User login(String username, String password) throws MallException {
@@ -72,8 +65,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 用户更新个人信息
-     * @param user
-     * @throws MallException
+     * @param user 用户实体
      */
     @Override
     public void updateInfo(User user) throws MallException {
@@ -86,8 +78,6 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 管理员校验
-     * @param user
-     * @return
      */
     @Override
     public boolean isAdmin(User user) {

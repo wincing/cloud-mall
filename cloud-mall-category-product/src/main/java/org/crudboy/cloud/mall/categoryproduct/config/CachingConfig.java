@@ -11,20 +11,18 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import java.time.Duration;
 
 /**
- * redis缓存配置类
+ * redis缓存配置
  */
 @Configuration
 @EnableCaching
 public class CachingConfig {
     @Bean
     public RedisCacheManager redisCacheManager(RedisConnectionFactory connectionFactory) {
-        RedisCacheWriter redisCacheWriter = RedisCacheWriter
-                .lockingRedisCacheWriter(connectionFactory);
+        RedisCacheWriter redisCacheWriter = RedisCacheWriter.lockingRedisCacheWriter(connectionFactory);
         RedisCacheConfiguration cacheConfiguration = RedisCacheConfiguration.defaultCacheConfig();
+        // 设置最长存活时间
         cacheConfiguration = cacheConfiguration.entryTtl(Duration.ofSeconds(30));
 
-        RedisCacheManager redisCacheManager = new RedisCacheManager(redisCacheWriter,
-                cacheConfiguration);
-        return redisCacheManager;
+        return new RedisCacheManager(redisCacheWriter, cacheConfiguration);
     }
 }

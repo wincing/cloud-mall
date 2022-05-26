@@ -5,7 +5,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * 商品目录树形结构，用于前端展示
+ */
 public class CategoryVO implements Serializable {
+    // 序列化存redis缓存中
+    private static final long serialVersionUID = 4211435884995550320L;
+
     private Integer id;
 
     private String name;

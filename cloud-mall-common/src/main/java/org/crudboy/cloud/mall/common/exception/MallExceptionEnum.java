@@ -1,5 +1,8 @@
 package org.crudboy.cloud.mall.common.exception;
 
+/**
+ * 错误类型枚举类
+ */
 public enum MallExceptionEnum {
     NEED_USER_NAME(10001, "用户名不能为空"),
 
@@ -43,7 +46,9 @@ public enum MallExceptionEnum {
 
     WRONG_ORDER_STATUS(10020, "订单状态不符"),
 
-    SYSTEM_ERROR(20000, "系统异常");
+    SYSTEM_ERROR(20000, "系统异常"),
+
+    NETWORK_ERROR(20001, "网络异常");
 
 
     Integer code;

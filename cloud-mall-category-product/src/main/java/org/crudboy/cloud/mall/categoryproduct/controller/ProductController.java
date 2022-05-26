@@ -20,8 +20,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 
+
 /**
- * 商品管理控制器
+ * 商品模块路由
  */
 @RestController
 public class ProductController {
@@ -38,7 +39,7 @@ public class ProductController {
     @PostMapping("/admin/file/upload")
     public ApiRestResponse uploadFile(HttpServletRequest request,
                                   @RequestParam("file") MultipartFile file) {
-        URI uri = productService.upload(request, file);
+        URI uri = productService.upload(file);
         if (uri == null) {
             throw new MallException(MallExceptionEnum.UPLOAD_FILE_FAILED);
         }

@@ -51,8 +51,8 @@ public class CartServiceImpl implements CartService {
 
     /**
      * 添加行为的合法性校验
-     * @param productId
-     * @param count
+     * @param productId 商品id
+     * @param count 添加数量
      */
     private void validProduct(Integer productId, Integer count) {
         Product product = productFeignClient.detailForFeign(productId);
@@ -65,6 +65,10 @@ public class CartServiceImpl implements CartService {
         }
     }
 
+    /**
+     * 返回当前用户购物车列表
+     * @param userId 用户id
+     */
     @Override
     public List<CartVO> list(Integer userId) {
         List<CartVO> cartVOList = cartMapper.selectList(userId);
@@ -100,6 +104,12 @@ public class CartServiceImpl implements CartService {
         }
     }
 
+    /**
+     * 选中或取消购物车
+     * @param userId 用户id
+     * @param productId 商品id
+     * @param selected 勾选状态： 0代表未勾选，1代表已勾选
+     */
     @Override
     public List<CartVO> selectOrNot(Integer userId, Integer productId, Integer selected) {
         Cart cart = cartMapper.selectCartByUserIdAndProductId(userId, productId);
@@ -111,6 +121,9 @@ public class CartServiceImpl implements CartService {
         return list(userId);
     }
 
+    /**
+     * 选中或取消所有购物车
+     */
     @Override
     public List<CartVO> selectAllOrNot(Integer userId, Integer selected) {
         cartMapper.selectOrNot(userId, null, selected);

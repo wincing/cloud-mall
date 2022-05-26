@@ -2,6 +2,9 @@ package org.crudboy.cloud.mall.cartorder.model.request;
 
 import javax.validation.constraints.NotNull;
 
+/**
+ * 创建订单请求
+ */
 public class CreateOrderReq {
 
     @NotNull

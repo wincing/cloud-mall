@@ -1,0 +1,46 @@
+eureka:
+    client:
+        service-url:
+            defaultZone: http://eureka1:8000/eureka, http://eureka2:8000/eureka
+server:
+    port: 8092
+spring:
+    application:
+        name: cloud-mall-zuul
+    datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        name: mall_datasource
+        password: ''
+        url: jdbc:mysql://mysql1:3306/mall?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
+        username: root
+        hikari:
+            connection-timeout: 30000
+    redis:
+        cluster:
+            nodes: redis1:6379, redis2:6379, redis2:6379, redis3:6379, redis4:6379, redis5:6379, redis6:6379
+            max-redirects: 3
+        password: ""
+    session:
+        store-type: redis
+logging:
+    pattern:
+        file: '%clr(%d{${LOG_DATEFORMAT_PATTERN:HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p})
+                    %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan}
+                    %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}'
+    file: app.log
+    path: /springboot/log
+feign:
+    httpclient:
+        connection-timeout: 30000
+hystrix:
+    command:
+        default:
+            execution:
+                isolation:
+                    thread:
+                        timeoutInMilliseconds: 122000
+ribbon:
+    ReadTimeout: 60000
+    connection-timeout: 3000
+    eureka:
+        enabled: true
