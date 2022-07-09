@@ -1,6 +1,5 @@
 package org.crud.cloud.mall.zuul.filter;
 
-import com.netflix.discovery.converters.Auto;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.exception.ZuulException;
@@ -12,8 +11,6 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
-import java.io.UnsupportedEncodingException;
 
 import static org.crudboy.cloud.mall.common.common.Constant.MALL_USER;
 

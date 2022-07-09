@@ -149,6 +149,8 @@ public class ProductServiceImpl implements ProductService {
         if(rootId != null) {
             List<CategoryVO> categoryVOList = categoryService.selectForCustomer(rootId);
             ArrayList<Integer> categoryIdList = new ArrayList<>();
+            // 本目录下的商品也要加入
+            categoryIdList.add(rootId);
 
             dfsCategory(categoryVOList, categoryIdList);
             productListQuery.setCategoryIds(categoryIdList);

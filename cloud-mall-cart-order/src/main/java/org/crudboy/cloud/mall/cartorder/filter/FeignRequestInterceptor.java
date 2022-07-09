@@ -20,6 +20,7 @@ import java.util.Enumeration;
 public class FeignRequestInterceptor implements RequestInterceptor {
     @Override
     public void apply(RequestTemplate requestTemplate) {
+        // RequestContextHolder持有当前请求
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         if (requestAttributes == null) {
             return ;

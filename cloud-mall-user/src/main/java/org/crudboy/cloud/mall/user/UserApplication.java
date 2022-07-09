@@ -12,7 +12,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableRedisHttpSession
 @MapperScan(basePackages = "org.crudboy.cloud.mall.user.model.dao")
 public class UserApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(UserApplication.class, args);
     }

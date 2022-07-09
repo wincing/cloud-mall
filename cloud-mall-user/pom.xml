@@ -58,9 +58,10 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-<!--                <configuration>-->
-<!--                    <classifier>execute</classifier>-->
-<!--                </configuration>-->
+                <!-- 这个插件打包的Jar包可以直接运行，但是不可依赖 -->
+                <configuration>
+                    <classifier>execute</classifier>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.mybatis.generator</groupId>
