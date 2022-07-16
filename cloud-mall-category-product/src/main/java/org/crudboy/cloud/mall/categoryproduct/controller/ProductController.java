@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 
@@ -37,8 +36,7 @@ public class ProductController {
     }
 
     @PostMapping("/admin/file/upload")
-    public ApiRestResponse uploadFile(HttpServletRequest request,
-                                  @RequestParam("file") MultipartFile file) {
+    public ApiRestResponse uploadFile(@RequestParam("file") MultipartFile file) {
         URI uri = productService.upload(file);
         if (uri == null) {
             throw new MallException(MallExceptionEnum.UPLOAD_FILE_FAILED);
@@ -90,11 +88,13 @@ public class ProductController {
         return ApiRestResponse.success(pageInfo);
     }
 
+    @ApiOperation("显示单个商品详情(其它模块")
     @GetMapping("/product/detailForFeign")
     public Product detailForFeign(@RequestParam Integer id) {
         return productService.detail(id);
     }
 
+    @ApiOperation("更新库存")
     @PostMapping("/product/updateStock")
     public void updateStock(@RequestParam Integer productId, @RequestParam Integer stock) {
         productService.updateStock(productId, stock);

@@ -3,21 +3,25 @@ package org.crud.cloud.mall.zuul.filter;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.exception.ZuulException;
+import lombok.extern.slf4j.Slf4j;
 import org.crud.cloud.mall.zuul.feign.UserFeignClient;
+import org.crudboy.cloud.mall.common.exception.MallException;
+import org.crudboy.cloud.mall.common.exception.MallExceptionEnum;
 import org.crudboy.cloud.mall.user.model.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
-import static org.crudboy.cloud.mall.common.common.Constant.MALL_USER;
+import static org.crudboy.cloud.mall.common.common.Constant.MALL_TOKEN;
+
 
 /**
  *  管理员过滤器
  */
 @Component
+@Slf4j
 public class AdminFilter extends ZuulFilter {
 
     @Autowired
@@ -30,7 +34,7 @@ public class AdminFilter extends ZuulFilter {
 
     @Override
     public int filterOrder() {
-        return 0;
+        return 1; // 晚于UserFilter执行
     }
 
     @Override
@@ -42,10 +46,7 @@ public class AdminFilter extends ZuulFilter {
         if (requestURI.contains("/admin/login")) {
             return false;
         }
-        if (requestURI.contains("admin")) {
-            return true;
-        }
-        return false;
+        return requestURI.contains("admin");
     }
 
     @Override
@@ -54,28 +55,20 @@ public class AdminFilter extends ZuulFilter {
         context.getResponse().setCharacterEncoding("UTF-8");
         HttpServletRequest request = context.getRequest();
 
-        HttpSession session = request.getSession();
-        User currentUser = (User)session.getAttribute(MALL_USER);
-        if (currentUser == null) {
-            context.setSendZuulResponse(false);
-            context.setResponseBody("{\n" +
-                    "    \"code\": 10007,\n" +
-                    "    \"msg\": \"用户未登录\",\n" +
-                    "    \"data\": null\n" +
-                    "}");
-            context.setResponseStatusCode(200);
-            return null;
+        String token = request.getHeader(MALL_TOKEN);
+        User currentUser = null;
+        if (token != null && token.length() != 0) {
+            Integer userId = userFeignClient.get(token);
+            currentUser = userFeignClient.getUserById(userId);
         }
-
         if (!userFeignClient.checkAdminRole(currentUser)) {
             context.setSendZuulResponse(false);
-            context.setResponseBody("{\n" +
-                    "    \"code\": 10009,\n" +
-                    "    \"msg\": \"无管理员权限\",\n" +
-                    "    \"data\": null\n" +
-                    "}");
+            context.setResponseBody(new MallException(MallExceptionEnum.NEED_ADMIN)
+                    .toString());
             context.setResponseStatusCode(200);
         }
+
+        log.info("the admin trying login: {} ------------", currentUser);
         return null;
     }
 }

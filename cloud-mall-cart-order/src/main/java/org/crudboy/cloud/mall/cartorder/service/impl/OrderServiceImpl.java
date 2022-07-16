@@ -249,32 +249,6 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-//    /**
-//     * 调用该方法生成支付二维码图片
-//     * @param orderNo
-//     * @return
-//     */
-//    @Override
-//    public String qrCode(String orderNo) {
-//        // 生成支付页面地址
-//        String address = ip + ":" + port;
-//        String payUrl = "http://" + address + "/cart-order/order/pay?orderNo=" + orderNo;
-//
-//        // 生成支付地址的二维码
-//        try {
-//            QRCodeGenerator.generatorQRCodeImage(payUrl, 350, 350,
-//                    fileUploadAddress + orderNo + ".png");
-//        } catch (WriterException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        // 支付二维码图片访问地址
-//        String imgAddress = "http://" + address + "/cart-order/image/" + orderNo + ".png";
-//        return imgAddress;
-//    }
-
     /**
      * 获取所有订单
      * @param pageNum 请求的第几页
@@ -337,8 +311,8 @@ public class OrderServiceImpl implements OrderService {
         if (order == null) {
             throw new MallException(MallExceptionEnum.NOT_ORDER);
         }
-        if (!userFeignClient.checkAdminRole(userFeignClient.getCurrentUser())
-                && user.getId() != order.getUserId()) {
+        if (!userFeignClient.checkAdminRole(user) &&
+                !user.getId().equals(order.getUserId())) {
             throw new MallException(MallExceptionEnum.ORDER_MISMATCH);
         }
 

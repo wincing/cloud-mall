@@ -1,11 +1,13 @@
 package org.crudboy.cloud.mall.user.service.impl;
 
 
+import com.netflix.discovery.converters.Auto;
 import org.crudboy.cloud.mall.common.exception.MallException;
 import org.crudboy.cloud.mall.common.exception.MallExceptionEnum;
 import org.crudboy.cloud.mall.common.util.MD5Utils;
 import org.crudboy.cloud.mall.user.model.dao.UserMapper;
 import org.crudboy.cloud.mall.user.model.pojo.User;
+import org.crudboy.cloud.mall.user.service.RedisTokenService;
 import org.crudboy.cloud.mall.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     UserMapper userMapper;
+
+    @Autowired
+    RedisTokenService redisTokenService;
 
     /**
      * 用户注册
@@ -55,7 +60,7 @@ public class UserServiceImpl implements UserService {
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-
+        // todo 检验重复登录
         User user = userMapper.selectForLogin(username, hashedPassword);
         if (user == null) {
             throw new MallException(MallExceptionEnum.WRONG_PASSWORD);
@@ -74,6 +79,15 @@ public class UserServiceImpl implements UserService {
         if (count > 1) {
             throw new MallException(MallExceptionEnum.UPDATE_FAILED);
         }
+    }
+
+    /**
+     * 获取用户
+     * @param userId
+     */
+    @Override
+    public User getUserById(Integer userId) {
+        return userMapper.selectByPrimaryKey(userId);
     }
 
     /**

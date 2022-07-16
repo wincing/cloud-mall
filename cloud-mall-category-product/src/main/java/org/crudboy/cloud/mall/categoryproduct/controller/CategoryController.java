@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -33,14 +32,14 @@ public class CategoryController {
 
     @ApiOperation("后台添加目录")
     @PostMapping("/admin/category/add")
-    public ApiRestResponse addCategory(HttpSession session, @RequestBody @Valid AddCategoryReq addCategory) {
+    public ApiRestResponse addCategory(@RequestBody @Valid AddCategoryReq addCategory) {
         categoryService.add(addCategory);
         return ApiRestResponse.success();
     }
 
     @ApiOperation("后台更新目录")
     @PostMapping("/admin/category/update")
-    public ApiRestResponse updateCategory(HttpSession session, @RequestBody @Valid UpdateCategoryReq updateCategoryReq) {
+    public ApiRestResponse updateCategory( @RequestBody @Valid UpdateCategoryReq updateCategoryReq) {
         Category category = new Category();
         BeanUtils.copyProperties(updateCategoryReq, category);
         categoryService.update(category);

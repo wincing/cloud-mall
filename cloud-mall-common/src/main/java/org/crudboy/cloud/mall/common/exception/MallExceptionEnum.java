@@ -46,6 +46,8 @@ public enum MallExceptionEnum {
 
     WRONG_ORDER_STATUS(10020, "订单状态不符"),
 
+    LOGIN_REPEATED(10021, "禁止重复登录"),
+
     SYSTEM_ERROR(20000, "系统异常"),
 
     NETWORK_ERROR(20001, "网络异常");

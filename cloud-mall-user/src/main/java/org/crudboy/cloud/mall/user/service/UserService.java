@@ -11,5 +11,7 @@ public interface UserService {
 
     void updateInfo(User user) throws MallException;
 
+    User getUserById(Integer userId);
+
     boolean isAdmin(User user);
 }

@@ -1,31 +1,38 @@
 package org.crudboy.cloud.mall.user.controller;
 
 
-import com.netflix.ribbon.proxy.annotation.Http;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.crudboy.cloud.mall.common.common.ApiRestResponse;
-import org.crudboy.cloud.mall.common.common.Constant;
 import org.crudboy.cloud.mall.common.exception.MallException;
 import org.crudboy.cloud.mall.common.exception.MallExceptionEnum;
 import org.crudboy.cloud.mall.user.model.pojo.User;
+import org.crudboy.cloud.mall.user.service.RedisTokenService;
 import org.crudboy.cloud.mall.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import javax.servlet.http.HttpSession;
-import static org.crudboy.cloud.mall.common.common.Constant.MALL_USER;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.UUID;
+
+import static org.crudboy.cloud.mall.common.common.Constant.MALL_TOKEN;
 
 /**
  * 用户模块路由
  */
 
+@Slf4j
 @RestController
 public class UserController {
 
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    RedisTokenService redisTokenService;
 
     @ApiOperation("用户注册")
     @PostMapping("/register")
@@ -48,7 +55,7 @@ public class UserController {
     @ApiOperation("用户登录")
     @PostMapping("/login")
     public ApiRestResponse login(@RequestParam String username, @RequestParam String password,
-                                 HttpSession session) throws MallException {
+                                 HttpServletResponse response) throws MallException {
         if (StringUtils.isEmpty(username)) {
             return ApiRestResponse.error(MallExceptionEnum.NEED_USER_NAME);
         }
@@ -57,23 +64,23 @@ public class UserController {
         }
 
         User user = userService.login(username, password);
-        // session中不能保存用户密码
-        user.setPassword(null);
-        session.setAttribute(MALL_USER, user);
+        user.setPassword(null); // session中不能保存用户密码
+
+        String token = UUID.randomUUID().toString();
+        redisTokenService.add(token, user.getId());
+        response.setHeader(MALL_TOKEN, token);
+        log.info("user login completed: {} ---- token is {}", user, token);
 
         return ApiRestResponse.success(user);
     }
 
     @ApiOperation("用户个性签名更新")
     @PostMapping("/user/update")
-    public ApiRestResponse updateUserInfo(HttpSession session, @RequestParam String signature) throws MallException {
-        User currentUser = (User)session.getAttribute(MALL_USER);
-        if (currentUser == null) {
-            throw new MallException(MallExceptionEnum.NEED_LOGIN);
-        }
-
-        User user = new User();
-        user.setId(currentUser.getId());
+    public ApiRestResponse updateUserInfo(HttpServletRequest request,
+                                          @RequestParam String signature) throws MallException {
+        String token = request.getHeader(MALL_TOKEN);
+        Integer userId = redisTokenService.get(token);
+        User user = userService.getUserById(userId);
         user.setPersonalizedSignature(signature);
         userService.updateInfo(user);
 
@@ -82,15 +89,16 @@ public class UserController {
 
     @ApiOperation("用户退出")
     @PostMapping("/user/logout")
-    public ApiRestResponse logout(HttpSession session) {
-        session.removeAttribute(MALL_USER);
+    public ApiRestResponse logout(HttpServletRequest request) {
+        String token = request.getHeader(MALL_TOKEN);
+        redisTokenService.delete(token);
         return ApiRestResponse.success();
     }
 
     @ApiOperation("管理员登录")
     @PostMapping("/admin/login")
     public ApiRestResponse adminLogin(@RequestParam String username, @RequestParam String password,
-                                 HttpSession session) throws MallException {
+                                 HttpServletResponse response) throws MallException {
         if (StringUtils.isEmpty(username)) {
             return ApiRestResponse.error(MallExceptionEnum.NEED_USER_NAME);
         }
@@ -99,9 +107,13 @@ public class UserController {
         }
 
         User user = userService.login(username, password);
+        user.setPassword(null);
+
         if (userService.isAdmin(user)) {
-            user.setPassword(null);
-            session.setAttribute(MALL_USER, user);
+            String token = UUID.randomUUID().toString();
+            redisTokenService.add(token, user.getId());
+            response.setHeader(MALL_TOKEN, token);
+            log.info("user login: {} ---- token is {}", user, token);
         } else {
             return ApiRestResponse.error(MallExceptionEnum.NEED_ADMIN);
         }
@@ -114,13 +126,8 @@ public class UserController {
         return userService.isAdmin(user);
     }
 
-    /**
-     * 获取当前登录的User对象
-     * @param session 该用户会话
-     * @return 用户对象
-     */
-    @GetMapping("/getCurrentUser")
-    public User getCurrentUser(HttpSession session) {
-        return (User)session.getAttribute(MALL_USER);
+    @PostMapping("/getuser")
+    public User getUserById(@RequestParam("userId") Integer userId) {
+        return userService.getUserById(userId);
     }
 }

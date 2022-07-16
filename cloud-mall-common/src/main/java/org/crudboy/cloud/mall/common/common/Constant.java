@@ -11,10 +11,10 @@ import java.util.Set;
 @Component
 public class Constant {
 
-    // 标识用户会话的key
-    public static final String MALL_USER = "mall_user";
+    /** 报文携带token字段名 **/
+    public static final String MALL_TOKEN = "cloud_mall_token";
 
-    // 支持商品排序的方式
+    /** 支持商品排序的方式 **/
     public static Set<String> PRICE_ASC_DESC = Sets.newHashSet("price desc", "price asc");
 
     /**

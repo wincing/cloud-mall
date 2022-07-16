@@ -23,4 +23,12 @@ public class MallException extends RuntimeException {
     public String getMsg() {
         return msg;
     }
+
+    @Override
+    public String toString() {
+        return "{\n" +
+                "    \"code\": \"" + code + "\",\n" +
+                "    \"msg\": \"" + msg + "\"\n" +
+                "}";
+    }
 }
