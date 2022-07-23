@@ -42,10 +42,9 @@ public class CartServiceImpl implements CartService {
 
             Cart cartNew = new Cart();
             BeanUtils.copyProperties(cart, cartNew);
-            cartNew.setQuantity(count + cart.getQuantity());
+            cartNew.setQuantity(count);
             cartMapper.updateByPrimaryKeySelective(cartNew);
         }
-
         return list(userId);
     }
 
@@ -90,6 +89,9 @@ public class CartServiceImpl implements CartService {
             BeanUtils.copyProperties(cart, cartNew);
             cartNew.setQuantity(count);
             cartMapper.updateByPrimaryKeySelective(cartNew);
+            if (count == 0) {
+                delete(userId, productId);
+            }
         }
         return list(userId);
     }

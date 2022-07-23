@@ -57,9 +57,11 @@ public class UserFilter extends ZuulFilter {
         HttpServletRequest request = context.getRequest();
 
         String token = request.getHeader(MALL_TOKEN);
+        log.info("token {} is {}", MALL_TOKEN,  token);
         User currentUser = null;
         if (token != null && token.length() != 0) {
             Integer userId = userFeignClient.get(token);
+            log.info("get user id: [{}]", userId);
             currentUser = userFeignClient.getUserById(userId);
         }
         if (currentUser == null || currentUser.getId() == null) {
