@@ -60,8 +60,9 @@ public class AdminFilter extends ZuulFilter {
         if (token != null && token.length() != 0) {
             Integer userId = userFeignClient.get(token);
             currentUser = userFeignClient.getUserById(userId);
+            log.info("get current user: " + currentUser.toString());
         }
-        if (!userFeignClient.checkAdminRole(currentUser)) {
+        if (currentUser == null || !userFeignClient.checkAdminRole(currentUser)) {
             context.setSendZuulResponse(false);
             context.setResponseBody(new MallException(MallExceptionEnum.NEED_ADMIN)
                     .toString());

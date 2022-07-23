@@ -12,7 +12,7 @@ import java.util.Set;
 public class Constant {
 
     /** 报文携带token字段名 **/
-    public static final String MALL_TOKEN = "cloud_mall_token";
+    public static final String MALL_TOKEN = "Cloud_Mall_Token";
 
     /** 支持商品排序的方式 **/
     public static Set<String> PRICE_ASC_DESC = Sets.newHashSet("price desc", "price asc");
